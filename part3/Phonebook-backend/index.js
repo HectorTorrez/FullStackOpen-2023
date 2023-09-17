@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const Phonebook = require('./models/phonebook')
 let list = require('./list.json');
 const { unkownEnpoint } = require('./middlewares/unkwonEnpoint.js')
 
@@ -16,7 +17,7 @@ app.use(morgan(':method :url :status :response-time ms - :body '))
 
 
 app.get('/api/persons', (req, res) => {
-    res.json(list)
+    Phonebook.find({}).then(result => res.json(result))
 });
 
 app.get('/info', (req, res) => {
