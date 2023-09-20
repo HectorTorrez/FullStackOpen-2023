@@ -3,13 +3,18 @@ import { deletePerson } from "../services/phonebook"
 export const Person = (props) => {
 
     // eslint-disable-next-line react/prop-types
-    const {name, number, id} = props
+    const {name, number, id, setError} = props
 
     const handlerDelete = (id) => {
         let cf = confirm(`Delete ${name}`)
-        if(cf){
-            deletePerson(id)
-        }
+            if(cf){
+                deletePerson(id).then().catch(error => error ? setError(`This ${name} was already removed from server`) : '')
+                setTimeout(() => {
+                    setError(null)
+                }, 5000);
+            }
+            
+       
     }
 
   

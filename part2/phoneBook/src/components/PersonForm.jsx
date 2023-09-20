@@ -38,9 +38,9 @@ export const PersonForm = ({setPersons, persons, setNotificacion}) => {
             setPersons([...persons, response.data])
            
             setNotificacion(`Added ${response.data.name}`)
-            // setTimeout(() => {
-            //   setNotificacion(null)
-            // }, 5000);
+            setTimeout(() => {
+              setNotificacion(null)
+            }, 5000);
           })
           .finally(
             setNewName(''), setNewNumber('')

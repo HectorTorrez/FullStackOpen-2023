@@ -23,7 +23,8 @@ export const createPerson = async(newPerson) => {
 
 
 export const deletePerson = async(id) => {
-    return  await axios.delete(`http://localhost:3001/persons/${id}`)
+    const request =  await axios.delete(`http://localhost:3001/persons/${id}`)
+    return request
 }
 
 export const updatePerson = async(id, newPerson) => {
