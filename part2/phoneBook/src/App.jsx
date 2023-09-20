@@ -11,9 +11,10 @@ export const App = () => {
   const person = async() => {
     const data = await getPersons()
     setPersons(data.data)
-    // setPersons(data)
   }
  
+  
+
   useEffect(()=>{
     person()
   },[])
