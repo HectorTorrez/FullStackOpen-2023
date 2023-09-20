@@ -12,6 +12,7 @@ export const Person = (props) => {
         }
     }
 
+  
   return (
     <div>
         <p>{name} <span>{number}</span> </p> 

@@ -1,35 +1,46 @@
 import { useState } from "react"
-import { createPerson } from "../services/phonebook"
+import {  createPerson, updatePerson } from "../services/phonebook"
 
 // eslint-disable-next-line react/prop-types
 export const PersonForm = ({setPersons, persons}) => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
-
-    const handleCheck = async(e) => {
-        e.preventDefault()
     
-        // eslint-disable-next-line react/prop-types
-        const filter = persons.filter(person => person.name === newName).length > 0
+    const handleCheck = async(e) => {
+      e.preventDefault()
+      
+      // eslint-disable-next-line react/prop-types
+      const existingPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
 
-        if(filter) return alert(`${newName} is already added to phonebook`)
         const newPerson = {
           name: newName,
           number: newNumber
           }
 
+
+        if(existingPerson){
+          let cf = confirm(`${existingPerson.name} is already added to Phonebook, replace the old number with a new one?`)
+          if(cf){
+            const id = existingPerson.id
+            updatePerson(id, newPerson).then(response => {
+              // eslint-disable-next-line react/prop-types
+              setPersons([...persons, persons.map(person => person.id !== id ? newPerson : response)])
+            })
+            .catch(error => {
+              alert(error.message)
+            })
+            .finally(
+              setNewName(''), setNewNumber('')
+            )
+          }
+        }else{
           createPerson(newPerson).then(response => {
-            setPersons([...persons, response])
-          })
-          .catch(error => {
-            alert(error.message)
+            setPersons([...persons, response.data])
           })
           .finally(
             setNewName(''), setNewNumber('')
           )
-          
-
-          
+        }        
       }
 
   return (

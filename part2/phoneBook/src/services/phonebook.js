@@ -16,13 +16,17 @@ const URL = 'http://localhost:3001/persons'
 
 
 export const createPerson = async(newPerson) => {
-    const request = await axios.post(URL, newPerson)
-    return request.data
+    return axios.post(URL, newPerson)
+
 
 }
 
 
 export const deletePerson = async(id) => {
-     await axios.delete(`http://localhost:3001/persons/${id}`)
-    return console.log(`Deleted post with iD ${id}`)
+    return  await axios.delete(`http://localhost:3001/persons/${id}`)
+}
+
+export const updatePerson = async(id, newPerson) => {
+    const request = await axios.put(`http://localhost:3001/persons/${id}`, newPerson)
+    return request.data
 }
