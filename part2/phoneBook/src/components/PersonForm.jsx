@@ -2,7 +2,7 @@ import { useState } from "react"
 import {  createPerson, updatePerson } from "../services/phonebook"
 
 // eslint-disable-next-line react/prop-types
-export const PersonForm = ({setPersons, persons}) => {
+export const PersonForm = ({setPersons, persons, setNotificacion}) => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     
@@ -36,6 +36,11 @@ export const PersonForm = ({setPersons, persons}) => {
         }else{
           createPerson(newPerson).then(response => {
             setPersons([...persons, response.data])
+           
+            setNotificacion(`Added ${response.data.name}`)
+            // setTimeout(() => {
+            //   setNotificacion(null)
+            // }, 5000);
           })
           .finally(
             setNewName(''), setNewNumber('')

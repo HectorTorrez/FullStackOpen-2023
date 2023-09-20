@@ -8,6 +8,7 @@ import { getPersons } from "./services/phonebook"
 export const App = () => {
   const [persons, setPersons] = useState([])
   const [filterByName, setFilterByName] = useState('')
+  const [notification, setNotificacion] = useState(false)
 
   const person = async() => {
     const data = await getPersons()
@@ -25,13 +26,15 @@ export const App = () => {
     return byName
   })
 
+ 
 
   return (
     <section>
       <h2>Phonebook</h2>
-        <Filter setFilterByName={setFilterByName}/>
+        <div className="phonebook">{notification}</div>
+        <Filter setFilterByName={setFilterByName} />
         <h3>Add a new</h3>
-        <PersonForm setPersons={setPersons} persons={persons}/>
+        <PersonForm setPersons={setPersons} persons={persons} setNotificacion={setNotificacion}/>
         <h2>Numbers</h2>
        <Persons numbers={numbers}/>
     </section>
