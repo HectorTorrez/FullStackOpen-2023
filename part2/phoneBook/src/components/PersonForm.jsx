@@ -1,5 +1,5 @@
-import axios from "axios"
 import { useState } from "react"
+import { createPerson } from "../services/phonebook"
 
 // eslint-disable-next-line react/prop-types
 export const PersonForm = ({setPersons, persons}) => {
@@ -18,23 +18,27 @@ export const PersonForm = ({setPersons, persons}) => {
           number: newNumber
           }
 
-            await axios.post(' http://localhost:3001/persons', newPerson)
+          createPerson(newPerson).then(response => {
+            setPersons([...persons, response])
+          })
+          .catch(error => {
+            alert(error.message)
+          })
+          .finally(
+            setNewName(''), setNewNumber('')
+          )
+          
 
-          setPersons([
-            ...persons,
-            newPerson
-          ])
-          setNewName('')
-          setNewNumber('')  
+          
       }
 
   return (
     <form onSubmit={handleCheck}>
         <div>
-          name: <input type="text" name="name" onChange={(e)=> setNewName(e.target.value)} />
+          name: <input type="text" name="name" value={newName} onChange={(e)=> setNewName(e.target.value)} />
         </div>
         <div>
-          number: <input type="text" name="number" onChange={(e)=> setNewNumber(e.target.value)} />
+          number: <input type="text" name="number" value={newNumber} onChange={(e)=> setNewNumber(e.target.value)} />
         </div>
         <div>
           <button type="submit">add</button>

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import { Filter } from "./components/Filter"
 import { PersonForm } from "./components/PersonForm"
 import { Persons } from "./components/Persons"
-import { getPersons } from "./API/persons"
+import { getPersons } from "./services/phonebook"
+
 
 export const App = () => {
   const [persons, setPersons] = useState([])
@@ -19,8 +20,8 @@ export const App = () => {
     person()
   },[])
 
-  const numbers = persons.filter(person => {
-    const byName =  person.name.toLowerCase().includes(filterByName.toLowerCase())
+  const numbers = persons?.filter(person => {
+    const byName =  person.name?.toLowerCase().includes(filterByName.toLowerCase())
     return byName
   })
 
