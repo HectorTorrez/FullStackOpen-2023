@@ -20,3 +20,9 @@ export const createPerson = async(newPerson) => {
     return request.data
 
 }
+
+
+export const deletePerson = async(id) => {
+     await axios.delete(`http://localhost:3001/persons/${id}`)
+    return console.log(`Deleted post with iD ${id}`)
+}
