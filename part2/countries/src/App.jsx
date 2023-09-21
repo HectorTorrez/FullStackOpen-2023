@@ -6,6 +6,7 @@ import { CountriesList } from "./components/CountriesList"
 export const App = () => {
 
   const [value, setValue] = useState('')
+  const [countryToShow, setCountryToShow] = useState([])
   const [countriesToShow, setCountriesToShow] = useState([])
 
 
@@ -20,11 +21,6 @@ export const App = () => {
   })
 
 
-//  useEffect(()=>{
-//   setCountriesToShow(value)
-
-//  },[value])
-
 
 
   return (
@@ -36,7 +32,7 @@ export const App = () => {
             (<Country key={item.name.common} name={item.name.common} capital={item.capital} area={item.area} languages={item.languages} img={item.flags.png}/>)) : null
         }
        {
-        filter?.length > 10 ? 'Too many matches, specify another filter' : <CountriesList filter={filter}/>
+        filter?.length > 10 ? 'Too many matches, specify another filter' : <CountriesList filter={filter} setCountryToShow={setCountryToShow} countryToShow={countryToShow} />
        }
       </pre>
     </section>
