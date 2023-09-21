@@ -8,7 +8,7 @@ export const Person = (props) => {
     const handlerDelete = (id) => {
         let cf = confirm(`Delete ${name}`)
             if(cf){
-                deletePerson(id).then(response => console.log(response)).catch(error => console.log(error))
+                deletePerson(id).then().catch(error => console.log(error))
                 setTimeout(() => {
                     setError(null)
                 }, 5000);

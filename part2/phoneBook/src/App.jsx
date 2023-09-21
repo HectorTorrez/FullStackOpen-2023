@@ -41,7 +41,7 @@ export const App = () => {
         
         <Filter setFilterByName={setFilterByName} />
         <h3>Add a new</h3>
-        <PersonForm setPersons={setPersons} persons={persons} setNotificacion={setNotificacion}/>
+        <PersonForm setPersons={setPersons} persons={persons} setNotificacion={setNotificacion} setError={setError}/>
         <h2>Numbers</h2>
        <Persons numbers={numbers} setError={setError}/>
     </section>

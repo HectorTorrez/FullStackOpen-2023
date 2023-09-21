@@ -44,7 +44,7 @@ app.get('/api/persons/:id', (req, res) => {
 //     return maxId + 1
 // }
 
-app.post('/api/persons', async (req, res) => {
+app.post('/api/persons', async (req, res, next) => {
     const body = req.body
 
     if (!body.name || !body.number) {
@@ -67,19 +67,19 @@ app.post('/api/persons', async (req, res) => {
 
     newPerson.save().then(response => {
         res.json(response)
-    })
+    }).catch(error => next(error))
 
 });
 
 app.put('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
-    const body = req.body
+    const { name, number } = req.body
     const newPerson = {
-        name: body.name,
-        number: body.number
+        name: name,
+        number: number
     }
 
-    Phonebook.findByIdAndUpdate(id, newPerson, { new: true }).then(response => {
+    Phonebook.findByIdAndUpdate(id, { name, number }, { new: true, runValidators: true, context: 'query' }).then(response => {
         res.json(response)
     })
         .catch(error => next(error))
@@ -98,6 +98,9 @@ const errorHandler = (error, req, res, next) => {
     console.error(error.message)
     if (error.name === 'CastError') {
         res.status(400).send({ error: 'malformatted id' })
+    }
+    if (error.name === 'ValidationError') {
+        res.status(400).json({ error: error.message })
     }
     next(error)
 }

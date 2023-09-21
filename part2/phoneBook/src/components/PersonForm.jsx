@@ -2,7 +2,7 @@ import { useState } from "react"
 import {  createPerson, updatePerson } from "../services/phonebook"
 
 // eslint-disable-next-line react/prop-types
-export const PersonForm = ({setPersons, persons, setNotificacion}) => {
+export const PersonForm = ({setPersons, persons, setNotificacion, setError}) => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     
@@ -25,9 +25,15 @@ export const PersonForm = ({setPersons, persons, setNotificacion}) => {
             updatePerson(id, newPerson).then(response => {
               // eslint-disable-next-line react/prop-types
               setPersons([...persons, persons.map(person => person.id !== id ? newPerson : response)])
+              setTimeout(() => {
+                setNotificacion(null)
+              }, 5000);
             })
             .catch(error => {
-              alert(error.message)
+              setError(error.response.data.error)
+              setTimeout(() => {
+                  setError(null)
+              }, 5000);
             })
             .finally(
               setNewName(''), setNewNumber('')
@@ -36,12 +42,16 @@ export const PersonForm = ({setPersons, persons, setNotificacion}) => {
         }else{
           createPerson(newPerson).then(response => {
             setPersons([...persons, response.data])
-           
             setNotificacion(`Added ${response.data.name}`)
             setTimeout(() => {
               setNotificacion(null)
             }, 5000);
-          })
+          }).catch(error => {
+            setError(error.response.data.error)
+            setTimeout(() => {
+              setError(null)
+          }, 5000);
+        })
           .finally(
             setNewName(''), setNewNumber('')
           )
