@@ -69,6 +69,20 @@ app.post('/api/persons', async (req, res) => {
 
 });
 
+app.put('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id
+    const body = req.body
+    const newPerson = {
+        name: body.name,
+        number: body.number
+    }
+
+    Phonebook.findByIdAndUpdate(id, newPerson, { new: true }).then(response => {
+        res.json(response)
+    })
+        .catch(error => next(error))
+})
+
 app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     Phonebook.findByIdAndDelete(id).then(response => {
@@ -77,6 +91,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
+app.use(unkownEnpoint)
 const errorHandler = (error, req, res, next) => {
     console.error(error.message)
     if (error.name === 'CastError') {
@@ -86,7 +101,6 @@ const errorHandler = (error, req, res, next) => {
 }
 
 app.use(errorHandler)
-app.use(unkownEnpoint)
 
 app.listen(PORT, () => {
     console.log(`Server is running in port ${PORT}`)
