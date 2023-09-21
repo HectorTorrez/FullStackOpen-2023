@@ -15,7 +15,7 @@ export const CountriesList = ({filter, setCountryToShow, countryToShow}) => {
                 <section key={item.name.common}>
                 <p>{item.name.common}</p>
                 <div>
-                    <button onClick={() => setCountryToShow([item],setShow(!show) )}>Show</button>
+                    <button onClick={() => {setCountryToShow([item]), setShow(!show)} }>Show</button>
                 </div>
                 </section>
             )
@@ -24,12 +24,15 @@ export const CountriesList = ({filter, setCountryToShow, countryToShow}) => {
         <section>
         {
             // eslint-disable-next-line react/prop-types
-            show ? countryToShow.map(item => (<Country key={item.name.common} name={item.name.common} capital={item.capital} area={item.area} languages={item.languages} img={item.flags.png}/>)) : null
+            show ? countryToShow.map(item => 
+                (<Country key={item.name.common} 
+                    name={item.name.common} 
+                    capital={item.capital} 
+                    area={item.area} 
+                    languages={item.languages} 
+                    img={item.flags.png}/>)) : null
         }
         </section>
    </section>
   )
 }
-{/* {
-    show ?  : null
-} */}

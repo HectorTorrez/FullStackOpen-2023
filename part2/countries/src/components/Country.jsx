@@ -1,3 +1,6 @@
+
+import { Weather } from "./Weather"
+
 // eslint-disable-next-line react/prop-types
 export const Country = ({name, capital, area, languages, img}) => {
 
@@ -17,6 +20,8 @@ export const Country = ({name, capital, area, languages, img}) => {
         <div>
             <img src={img} alt={`${name} flag`} />
         </div>
+        <Weather capital={capital}/>
+        
     </>
   )
 }
