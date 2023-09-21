@@ -22,29 +22,27 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/info', (req, res) => {
     const time = new Date()
-    const entrie = `Phonebook has infor for ${list.length}`
-    res.send(`<p>${entrie}</p> <p>${time}</p>`)
+    Phonebook.find({}).then(result => {
+        res.json(`Entries: ${result.length} Time: ${time}`)
+    })
 });
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = list.find(item => item.id === id)
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+    const id = req.params.id
+    Phonebook.findById(id).then(item => {
+        res.json(item)
+    })
 });
 
-const getRandomId = () => {
-    const maxId = list.length > 0
-        ? Math.max(...list.map(n => n.id))
-        : 0
+// const getRandomId = () => {
+//     const maxId = list.length > 0
+//         ? Math.max(...list.map(n => n.id))
+//         : 0
 
-    return maxId + 1
-}
+//     return maxId + 1
+// }
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', async (req, res) => {
     const body = req.body
 
     if (!body.name || !body.number) {
@@ -60,14 +58,14 @@ app.post('/api/persons', (req, res) => {
         })
     }
 
-    const newPerson = {
-        id: getRandomId(),
+    const newPerson = new Phonebook({
         name: body.name,
         number: body.number
-    }
+    })
 
-    list.push(newPerson)
-    res.json(newPerson)
+    newPerson.save().then(response => {
+        res.json(response)
+    })
 
 });
 
