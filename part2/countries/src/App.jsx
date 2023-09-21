@@ -36,7 +36,7 @@ export const App = () => {
             (<Country key={item.name.common} name={item.name.common} capital={item.capital} area={item.area} languages={item.languages} img={item.flags.png}/>)) : null
         }
        {
-        filter?.length > 10 ? 'Too many matches, specify another filter' : filter.map(item => (<CountriesList key={item.name.common} name={item.name.common}/>))
+        filter?.length > 10 ? 'Too many matches, specify another filter' : <CountriesList filter={filter}/>
        }
       </pre>
     </section>
