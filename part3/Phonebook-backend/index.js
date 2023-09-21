@@ -69,6 +69,14 @@ app.post('/api/persons', async (req, res) => {
 
 });
 
+app.delete('/api/persons/:id', (req, res) => {
+    const id = req.params.id
+    Phonebook.findByIdAndDelete(id).then(response => {
+        res.status(204).end()
+    })
+        .catch(error => console.log(error))
+})
+
 app.use(unkownEnpoint)
 
 app.listen(PORT, () => {
