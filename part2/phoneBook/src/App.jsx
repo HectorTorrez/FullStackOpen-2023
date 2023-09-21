@@ -28,7 +28,6 @@ export const App = () => {
   })
 
  
-
   return (
     <section>
       <h2>Phonebook</h2>\

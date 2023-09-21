@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors')
 const morgan = require('morgan');
 const Phonebook = require('./models/phonebook')
 let list = require('./list.json');
@@ -7,6 +8,7 @@ const { unkownEnpoint } = require('./middlewares/unkwonEnpoint.js')
 
 const PORT = process.env.PORT || 3001;
 app.disable('x-powered-by');
+app.use(cors())
 app.use(express.json());
 
 morgan.token('body', req => {
