@@ -12,7 +12,25 @@ const totalLikes = (blogs) => {
     : blogs.reduce(reducer, 0)
 }
 
+const favoriteBlog = (blogs) => {
+  const likes = []
+  blogs.forEach(item => {
+    likes.push(item.likes)
+  })
+  const popular = Math.max(...likes)
+  const filter = blogs.filter(item => item.likes === popular)
+  const blog = filter.map(item => {
+    return {
+      title: item.title,
+      author: item.author,
+      likes: item.likes
+    }
+  })
+  return blog
+}
+
 module.exports = {
   dummy,
-  totalLikes
+  totalLikes,
+  favoriteBlog
 }
