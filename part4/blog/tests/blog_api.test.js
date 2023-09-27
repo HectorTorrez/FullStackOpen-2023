@@ -24,5 +24,7 @@ test('get id like a unique identifier', async () => {
 
   const blogsAtEnd = await helper.blogsInDb()
   const contents = blogsAtEnd.map(b => b.id)
-  expect(contents).toBeDefined()
+  for (const id of contents) {
+    expect(id).toBeDefined()
+  }
 })
