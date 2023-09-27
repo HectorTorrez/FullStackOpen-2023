@@ -28,3 +28,19 @@ test('get id like a unique identifier', async () => {
     expect(id).toBeDefined()
   }
 })
+
+test('POST/ create a new blog post', async () => {
+  const newBlog = {
+    title: 'Eat mango',
+    author: 'Hector',
+    url: 'url.com',
+    likes: 150
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialState.length + 1)
+})
