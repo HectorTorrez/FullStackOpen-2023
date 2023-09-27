@@ -23,8 +23,8 @@ test('get id like a unique identifier', async () => {
     .expect(200)
 
   const blogsAtEnd = await helper.blogsInDb()
-  const contents = blogsAtEnd.map(b => b.id)
-  for (const id of contents) {
+  const ids = blogsAtEnd.map(b => b.id)
+  for (const id of ids) {
     expect(id).toBeDefined()
   }
 })
@@ -43,4 +43,21 @@ test('POST/ create a new blog post', async () => {
 
   const blogsAtEnd = await helper.blogsInDb()
   expect(blogsAtEnd).toHaveLength(helper.initialState.length + 1)
+})
+
+test('verify is the likes property is missing', async () => {
+  const newBlog = {
+    title: 'Eat',
+    author: 'Torrez',
+    url: 'url.com'
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  console.log(blogsAtEnd)
+  expect(blogsAtEnd).toHaveLength(helper.initialState.length + 1)
+  expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
 })
