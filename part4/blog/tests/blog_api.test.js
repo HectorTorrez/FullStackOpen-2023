@@ -61,3 +61,17 @@ test('verify is the likes property is missing', async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialState.length + 1)
   expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
 })
+
+test('verify if the title or url are mising', async () => {
+  const newBlog = {
+    author: 'Torrez',
+    likes: 400
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialState.length)
+})
