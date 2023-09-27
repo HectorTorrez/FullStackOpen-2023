@@ -8,7 +8,7 @@ const config = require('./utils/config')
 const notesRouter = require('./controllers/blogs')
 
 mongoose.set('strictQuery', false)
-
+info('connecting to', config.MONGODB_URI)
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
     info('Connected to MongoDB')
