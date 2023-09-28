@@ -43,15 +43,14 @@ describe('viewing a specific note', () => {
       .expect(201)
 
     const blogsAtEnd = await helper.blogsInDb()
-    console.log(blogsAtEnd)
     expect(blogsAtEnd).toHaveLength(helper.initialState.length + 1)
     expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
   })
 
   test('verify if the title or url are mising', async () => {
     const newBlog = {
-      author: 'Torrez',
-      likes: 400
+      author: 'Torrez Hector',
+      likes: 450
     }
     await api
       .post('/api/blogs')
@@ -101,5 +100,20 @@ describe('deleting one note', () => {
     expect(blogs).toHaveLength(helper.initialState.length - 1)
     const author = blogs.map(b => b.author)
     expect(author).not.toContain(blogToDelete.author)
+  })
+})
+
+describe('updating one note', () => {
+  test('success with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    await api
+      .patch(`/api/blogs/${blogToUpdate.id}`)
+      .send({ likes: 300 })
+      .expect(200)
+    const blogs = await helper.blogsInDb()
+    const udaptedBlog = blogs[0]
+    expect(blogs).toHaveLength(blogsAtStart.length)
+    expect(udaptedBlog.likes).toBe(300)
   })
 })
