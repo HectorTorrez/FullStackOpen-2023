@@ -17,4 +17,14 @@ notesRouter.post('/', async (req, res) => {
   }
 })
 
+notesRouter.delete('/:id', async (req, res) => {
+  try {
+    const id = req.params.id
+    await Blog.findByIdAndDelete(id)
+    res.status(204).end()
+  } catch (e) {
+    error(e)
+  }
+})
+
 module.exports = notesRouter
