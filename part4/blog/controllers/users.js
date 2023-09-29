@@ -10,17 +10,31 @@ usersRouter.get('/', async (req, res) => {
 usersRouter.post('/', async (req, res) => {
   const { username, name, password } = req.body
 
+  const findUserName = await User.find({ username })
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
-  const user = new User({
-    username,
-    name,
-    passwordHash
-  })
+  if (username.length < 3 || password.length < 3) {
+    res.status(400).send({
+      error: 'Minimun character limit not met',
+      message: 'The request must containt a minimun of 3 characters.'
+    }).end()
+  } else if (findUserName.length > 0) {
+    res.status(400).send({
+      error: 'Username must be unique',
+      message: 'The request must be unique'
+    })
+  } else {
+    const user = new User({
+      username,
+      name,
+      passwordHash
+    })
 
-  const savedUser = await user.save()
-  res.status(201).json(savedUser)
+    const savedUser = await user.save()
+    res.status(201).json(savedUser)
+  }
 })
 
 module.exports = usersRouter
