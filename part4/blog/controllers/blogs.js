@@ -1,19 +1,33 @@
 const notesRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const { error } = require('../utils/logger')
 
 notesRouter.get('/', async (req, res) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
   res.json(blogs)
 })
 
 notesRouter.post('/', async (req, res) => {
   const body = req.body
-  const blog = new Blog(body)
+  const user = await User.find({})
+  const id = user.map(u => u.id)
+  const randomIndex = Math.floor(Math.random() * id.length)
+  const randomId = id[randomIndex]
+  const userBlogs = await User.findById(randomId)
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    user: randomId,
+    likes: body.likes
+  })
   if (body.title === undefined || body.url === undefined) {
     res.status(400).end()
   } else {
     const response = await blog.save()
+    userBlogs.blogs = user.blogs.concat(response._id)
+    await userBlogs.save()
     res.status(201).json(response)
   }
 })
