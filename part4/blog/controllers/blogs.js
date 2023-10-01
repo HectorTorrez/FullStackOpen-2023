@@ -8,26 +8,35 @@ notesRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
   res.json(blogs)
 })
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('hector ')) {
+    return authorization.replace('hector ', '')
+  }
+  return null
+}
+
 notesRouter.post('/', async (req, res) => {
   const body = req.body
-  const user = await User.find({})
-  const id = user.map(u => u.id)
-  const randomIndex = Math.floor(Math.random() * id.length)
-  const randomId = id[randomIndex]
-  const userBlogs = await User.findById(randomId)
+  const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    user: randomId,
+    user: user.id,
     likes: body.likes
   })
   if (body.title === undefined || body.url === undefined) {
     res.status(400).end()
   } else {
     const response = await blog.save()
-    userBlogs.blogs = user.blogs.concat(response._id)
-    await userBlogs.save()
+    user.blogs = user.blogs.concat(response._id)
+    await user.save()
     res.status(201).json(response)
   }
 })
