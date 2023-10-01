@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 const notesRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -7,7 +8,6 @@ notesRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
   res.json(blogs)
 })
-
 notesRouter.post('/', async (req, res) => {
   const body = req.body
   const user = await User.find({})
