@@ -1,24 +1,18 @@
 const jwt = require('jsonwebtoken')
-const notesRouter = require('express').Router()
+const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const { error } = require('../utils/logger')
 
-notesRouter.get('/', async (req, res) => {
+blogsRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
   res.json(blogs)
 })
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('hector ')) {
-    return authorization.replace('hector ', '')
-  }
-  return null
-}
 
-notesRouter.post('/', async (req, res) => {
+blogsRouter.post('/', async (req, res) => {
   const body = req.body
-  const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+  const token = req.token
+  const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!decodedToken.id) {
     return res.status(401).json({ error: 'token invalid' })
   }
@@ -41,7 +35,7 @@ notesRouter.post('/', async (req, res) => {
   }
 })
 
-notesRouter.delete('/:id', async (req, res) => {
+blogsRouter.delete('/:id', async (req, res) => {
   try {
     const id = req.params.id
     await Blog.findByIdAndDelete(id)
@@ -51,7 +45,7 @@ notesRouter.delete('/:id', async (req, res) => {
   }
 })
 
-notesRouter.patch('/:id', async (req, res) => {
+blogsRouter.patch('/:id', async (req, res) => {
   try {
     const body = req.body
     const id = req.params.id
@@ -70,4 +64,4 @@ notesRouter.patch('/:id', async (req, res) => {
   }
 })
 
-module.exports = notesRouter
+module.exports = blogsRouter
