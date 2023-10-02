@@ -1,22 +1,29 @@
 const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
 const { error } = require('../utils/logger')
+const { userExtractor } = require('../utils/middleware')
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 
 blogsRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
   res.json(blogs)
 })
 
-blogsRouter.post('/', async (req, res) => {
+blogsRouter.post('/', userExtractor, async (req, res) => {
   const body = req.body
   const token = req.token
+  const user = req.user
+
+  if (!token) {
+    return res.status(401).json({ error: 'token mising or invalid' })
+  }
+
   const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!decodedToken.id) {
     return res.status(401).json({ error: 'token invalid' })
   }
-  const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({
     title: body.title,
@@ -35,20 +42,25 @@ blogsRouter.post('/', async (req, res) => {
   }
 })
 
-blogsRouter.delete('/:id', async (req, res) => {
+blogsRouter.delete('/:id', userExtractor, async (req, res) => {
   try {
     const token = req.token
+    const user = req.user
+    const id = req.params.id
     if (!token) {
       return res.status(401).json({ error: 'token invalid or mising' })
     }
-    const id = req.params.id
     const decodedToken = jwt.verify(token, process.env.SECRET)
     if (!(token && decodedToken.id)) {
       return res.status(401).json({ error: 'token invalid or missing' })
     }
-    const user = await User.findById(decodedToken.id)
-    const blog = await Blog.findById(id)
-
+    if (!ObjectId.isValid(id)) {
+      return res.status(404).json({ error: 'Invalid Object id format' })
+    }
+    const blog = await Blog.findOne({ _id: id })
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' })
+    }
     if (blog.user.toString() === user.id.toString()) {
       await Blog.findByIdAndDelete(id)
       res.status(204).end()
