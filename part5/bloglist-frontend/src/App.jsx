@@ -12,7 +12,8 @@ const App = () => {
     e.preventDefault()
     try {
       const getUser = await blogService.login({username, password})
-       setUser(getUser)
+       localStorage.setItem('token', JSON.stringify(getUser))
+      setUser(getUser)
     } catch (error) {
       console.log(error)
     }
@@ -26,6 +27,11 @@ const App = () => {
 
   useEffect(() => {
     getBlogs()
+    const token = localStorage.getItem('token')
+    if(token){
+      const user = JSON.parse(token)
+      setUser(user)
+    }
   }, [])
   if(user === null){
     return (
@@ -44,10 +50,15 @@ const App = () => {
     )
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    setUser(null)
+  }
 
   return (
     <div>
       <h2>blogs</h2>
+      <p>{user.name} <button onClick={handleLogout}>log out</button></p>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
