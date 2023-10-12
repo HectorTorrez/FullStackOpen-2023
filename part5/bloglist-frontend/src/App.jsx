@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import { FormToCreateBlog } from './components/FormToCreateBlog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +14,7 @@ const App = () => {
     try {
       const getUser = await blogService.login({username, password})
        localStorage.setItem('token', JSON.stringify(getUser))
+       blogService.setToken(getUser.token)
       setUser(getUser)
     } catch (error) {
       console.log(error)
@@ -31,6 +33,7 @@ const App = () => {
     if(token){
       const user = JSON.parse(token)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
   if(user === null){
@@ -58,6 +61,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <FormToCreateBlog/>
       <p>{user.name} <button onClick={handleLogout}>log out</button></p>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
