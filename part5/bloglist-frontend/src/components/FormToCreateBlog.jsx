@@ -1,5 +1,6 @@
 import { useState } from "react"
 import blogService from '../services/blogs'
+import { Notification } from "./Notification"
 export const FormToCreateBlog = () => {
     const [blog, setBlog] = useState({
         title: '',
@@ -7,7 +8,7 @@ export const FormToCreateBlog = () => {
         url:''
     })
 
-    
+    const [notification, setNotification] = useState(false)
 
     const handleChange = (e) => {
         const {name, value} = e
@@ -21,24 +22,32 @@ export const FormToCreateBlog = () => {
 
    const handlePost = async(e) => {
     e.preventDefault()
-    const {name} = e
     try {
         await blogService.createBlog(blog)
-        setBlog(
-            {
-                title: '',
-                author: '',
-                url:''
-            }
-        )
+        setNotification(true)
     } catch (error) {
         console.log(error)
     }finally{
-        location.reload()
+        setTimeout(() => {
+            setNotification(false)
+            location.reload()
+            setBlog(
+                {
+                    title: '',
+                    author: '',
+                    url:''
+                }
+            )
+        }, 300);
 
     }
    }
   return (
+    <>
+    {
+        notification ? <Notification status={'success'} author={blog.author} text={blog.title}/> : null
+    }
+    
     <form onSubmit={handlePost} action="POST">
         <label htmlFor="title">
             title
@@ -54,5 +63,6 @@ export const FormToCreateBlog = () => {
         </label>
         <button >Send</button>
     </form>
+    </>
   )
 }

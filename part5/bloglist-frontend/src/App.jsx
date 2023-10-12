@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import { FormToCreateBlog } from './components/FormToCreateBlog'
+import { Notification } from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [notification, setNotification] = useState(false)
 
   const handleLogin = async(e) => {
     e.preventDefault()
@@ -18,6 +20,7 @@ const App = () => {
       setUser(getUser)
     } catch (error) {
       console.log(error)
+      setNotification(error.response.data.erro)
     }
   }
 
@@ -39,6 +42,9 @@ const App = () => {
   if(user === null){
     return (
       <div>
+        {
+          notification ? <Notification status={'error'} text={notification}/> : null
+        }
       <h2>Log in to application</h2>
       <form onSubmit={handleLogin}>
         <label htmlFor="username">
